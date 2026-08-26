@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
+    instrumentationHook: true,
     serverComponentsExternalPackages: ['libreoffice-convert', 'archiver', 'exceljs', '@prisma/client']
   }
 };

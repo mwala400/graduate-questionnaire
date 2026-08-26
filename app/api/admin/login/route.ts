@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ADMIN_COOKIE_NAME, createAdminSessionToken, isValidAdminCode } from '@/lib/auth';
+import { ADMIN_SESSION_HOURS } from '@/lib/adminConfig';
 
 export async function POST(req: NextRequest) {
   const { code } = await req.json().catch(() => ({ code: '' }));
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
   }
 
   const token = await createAdminSessionToken();
-  const hours = Number(process.env.ADMIN_SESSION_HOURS || 8);
+  const hours = ADMIN_SESSION_HOURS;
 
   const res = NextResponse.json({ ok: true });
   res.cookies.set(ADMIN_COOKIE_NAME, token, {

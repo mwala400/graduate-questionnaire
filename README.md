@@ -57,6 +57,13 @@ npm install
 
 # 3. Create your local environment file
 cp .env.example .env
+
+# 4. Generate admin credentials (access code + hidden route)
+#    This writes a compliant admin code (starts with a letter, contains digits,
+#    max 8 chars) and route into `.env`, and prints them. In dev the app also
+#    auto-generates these on first run if they are missing, and prints them on
+#    startup — see the "ADMIN ACCESS" banner in the server console.
+npm run setup
 ```
 
 Now open `.env` and set three things:
@@ -130,6 +137,13 @@ By default it serves on port 3000 (`PORT=8080 npm run start` to change it).
 Example: if you set `ADMIN_ROUTE_SECRET=gatekeeper-7f2c91`, the admin login is at
 `http://localhost:3000/gatekeeper-7f2c91`. Any other made-up path (e.g. `/admin`, `/login`,
 `/gatekeeper-7f2c92`) returns a normal 404.
+
+The admin access code and the hidden route are auto-generated on first run if they are missing
+(and in development you'll see them printed in the server console under the **ADMIN ACCESS**
+banner when you start the app). To (re)generate and persist them explicitly, run `npm run setup`
+— it writes a compliant code (starts with a letter, contains digits, max 8 characters) and route
+into `.env` and prints the login URL. Copy the same values into your Vercel environment variables
+when deploying (see §11).
 
 The admin session is stored in a signed, `httpOnly` cookie, so it can't be read or forged from
 client-side JavaScript. It expires automatically after `ADMIN_SESSION_HOURS` hours, or
