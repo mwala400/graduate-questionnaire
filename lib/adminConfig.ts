@@ -34,45 +34,23 @@ function firstNonPlaceholder(value: string | undefined, placeholders: string[]):
   return v;
 }
 
-// Resolve each admin setting. In development, missing/placeholder values are
-// auto-generated once per process so the app is usable immediately and the
-// codes can be printed on startup. In production (e.g. Vercel) we never
-// auto-generate at runtime — the values MUST come from environment variables,
-// otherwise each serverless instance would get a different (useless) code.
-export const ADMIN_ACCESS_CODE = (() => {
-  const fromEnv = firstNonPlaceholder(process.env.ADMIN_ACCESS_CODE, ['change-this-to-a-long-secret-code']);
-  if (fromEnv) return fromEnv;
-  if (!isProd) {
-    const g = genCompliantCode(8);
-    process.env.ADMIN_ACCESS_CODE = g;
-    return g;
-  }
-  return '';
-})();
+// `.env` is the single source of truth for these values. They are NOT
+// generated at runtime — doing so would produce different codes in Next.js's
+// separate main/worker processes (and across serverless instances on Vercel),
+// so the printed code would not match the one the server actually accepts.
+// Generate them once with `npm run setup`, which writes a compliant code
+// (starts with a letter, contains digits, max 8 chars) and route into `.env`
+// and prints them. If a value is missing, it stays empty (admin login fails
+// closed) and the startup banner tells you to run `npm run setup`.
+export const ADMIN_ACCESS_CODE = firstNonPlaceholder(process.env.ADMIN_ACCESS_CODE, [
+  'change-this-to-a-long-secret-code'
+]) ?? '';
 
-export const ADMIN_ROUTE_SECRET = (() => {
-  const fromEnv = firstNonPlaceholder(process.env.ADMIN_ROUTE_SECRET, ['gatekeeper-7f2c91']);
-  if (fromEnv) return fromEnv;
-  if (!isProd) {
-    const g = genCompliantCode(8);
-    process.env.ADMIN_ROUTE_SECRET = g;
-    return g;
-  }
-  return '';
-})();
+export const ADMIN_ROUTE_SECRET = firstNonPlaceholder(process.env.ADMIN_ROUTE_SECRET, ['gatekeeper-7f2c91']) ?? '';
 
-export const ADMIN_SESSION_SECRET = (() => {
-  const fromEnv = firstNonPlaceholder(process.env.ADMIN_SESSION_SECRET, [
-    'change-this-too-generate-a-random-64-char-hex-string'
-  ]);
-  if (fromEnv) return fromEnv;
-  if (!isProd) {
-    const g = genSessionSecret();
-    process.env.ADMIN_SESSION_SECRET = g;
-    return g;
-  }
-  return '';
-})();
+export const ADMIN_SESSION_SECRET = firstNonPlaceholder(process.env.ADMIN_SESSION_SECRET, [
+  'change-this-too-generate-a-random-64-char-hex-string'
+]) ?? '';
 
 export const ADMIN_SESSION_HOURS = Number(process.env.ADMIN_SESSION_HOURS || 8);
 

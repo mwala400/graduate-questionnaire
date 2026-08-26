@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ADMIN_ROUTE_SECRET } from '@/lib/adminConfig';
 
 export const metadata: Metadata = {
   title: "ATC IT Graduates' Curriculum Questionnaire",
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const adminHref = ADMIN_ROUTE_SECRET ? `/${ADMIN_ROUTE_SECRET}` : '#';
   return (
     <html lang="en">
       <body>
@@ -21,6 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         {children}
+        <footer className="site-footer">
+          <span>© Arusha Technical College — Curriculum Review Questionnaire</span>
+          <a className="admin-link" href={adminHref}>Staff / Admin login</a>
+        </footer>
       </body>
     </html>
   );
