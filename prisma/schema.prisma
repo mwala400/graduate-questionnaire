@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// One row per submitted questionnaire. Every multi-choice / matrix section
+// is stored as a JSON-encoded string (SQLite has no native JSON column) and
+// parsed/serialized in lib/schema.ts. Keeping one wide table mirrors the
+// single physical form and keeps per-response document generation simple.
+model Response {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Section A1 - personal particulars
+  name    String?
+  address String?
+  phone   String?
+  email   String?
+
+  // Section A2 - status (single choice) + free text for "Other"
+  status        String?
+  statusOther   String?
+
+  // Section A3 - main activities (multi choice) + free text for "Other"
+  activitiesJson String // string[]
+  activitiesOther String?
+
+  // Section B1 - soft skills matrix: { [skillLabel]: 'highly'|'recommended'|'not' }
+  softSkillsJson String
+  softSkillsOther String?
+
+  // Section B2 - professional skills matrix
+  professionalSkillsJson String
+  professionalSkillsOther String?
+
+  // Section B3 - specializations matrix
+  specializationsJson String
+  specializationsOther String?
+  knowledgeGap        String?
+
+  // Section C - certifications matrix
+  certificationsJson String
+
+  // Section D - industrial training
+  attachmentDuration    String?
+  practicalActivitiesJson String // string[]
+  practicalActivitiesOther String?
+
+  // Section E - industry-college collaboration
+  collaborationJson String // string[]
+  collaborationOther String?
+
+  // Section F - mode of delivery weighting + assessment mode
+  weightingColumn  String? // "A" | "B" | "C" | "D" | "E" | "OTHER"
+  weightingOtherJson String? // {lecture,tutorial,practical,visit,professional}
+  assessmentMode      String? // "60_40" | "50_50" | "40_60" | "OTHER"
+  assessmentOtherJson String? // {semester, continuous}
+
+  // Respondent details footer
+  respondentName     String?
+  respondentPosition String?
+  respondentPhone    String?
+  respondentDate     String?
+}
