@@ -1,7 +1,8 @@
 export async function register() {
+  // Only run in the real Node.js server runtime (not the edge runtime, and
+  // not during `next build`'s static analysis pass).
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    const { printAdminStartup } = await import('@/lib/adminConfig');
-    const base = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000';
-    printAdminStartup(base);
+    const { ensureAdminCredentials } = await import('./lib/adminCredentials');
+    ensureAdminCredentials();
   }
 }

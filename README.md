@@ -1,107 +1,129 @@
-# ATC IT Graduates' Curriculum Questionnaire — Web Portal
+# ATC IT Curriculum Review Questionnaires — Web Portal
 
-A Next.js application that puts the Arusha Technical College "Graduates' Questionnaire for
-Review of Curriculum for Ordinary Diploma Programme in Information Technology" online:
+A Next.js application that puts all four of Arusha Technical College's curriculum-review
+questionnaires online, as **one system with four separate shareable links**:
 
-- **Public respondents** fill the questionnaire (every section A–F, exactly as in the original
-  Word document) and can view a **Global Analysis** dashboard of aggregated results.
-- **Admins** unlock a hidden dashboard with a secret access code, and can download:
-  - Any single response as a **Word document (.docx)** that recreates the original
-    questionnaire layout — including both official logos (the national emblem and the ATC
-    crest) — filled in with that respondent's answers.
-  - Any single response as a matching **PDF** (converted from the exact same .docx, so the two
-    always look identical).
-  - **All** responses zipped as `.docx` files.
-  - **All** responses zipped as `.pdf` files.
-  - **All** responses as one **Excel workbook** (a summary sheet plus one detail sheet per
-    rating table).
-  - A **"full folder" ZIP** containing `docx/`, `pdf/`, and the Excel workbook together.
+| Type | Shareable link | Based on |
+|---|---|---|
+| Graduates | `/fill/graduate` | `IT_Graduate_Questionnaire.docx` |
+| Society | `/fill/society` | `IT_Society_Questionnaire.docx` |
+| Employers | `/fill/employer` | `IT_Employer_Questionnaire.docx` |
+| Professionals | `/fill/professional` | `IT_Professional_Questionnaire.docx` |
+
+Share whichever link fits each audience — graduates get the graduate link, employers get the
+employer link, and so on. Everyone fills only their own form.
+
+- **Public respondents** fill their questionnaire and, right after submitting, can download a
+  copy of their own answers (.docx or .pdf) to keep for their records.
+- **Everyone** can view a **Global Analysis** dashboard, with a tab to switch between the four
+  questionnaire types.
+- **Admins** unlock one dashboard (also with a type switcher) with a secret access code, and can
+  download, per type or all four at once:
+  - Any single response as a **Word document (.docx)** that recreates the original questionnaire
+    layout for that type — including both official logos.
+  - The same response as a matching **PDF**.
+  - **All** responses of one type zipped as `.docx`, or as `.pdf`.
+  - **All** responses of one type as one **Excel workbook**.
+  - A **"full folder" ZIP** (docx + pdf + Excel) for one type.
+  - **One ZIP with all four types**, each in its own subfolder.
 
 The admin area is not linked from anywhere in the interface. It only exists at a random path
-you choose in `.env`, and any other URL 404s exactly like a page that was never built — so
-regular visitors have no way to discover or guess it.
+you (or the app, automatically) choose, and any other URL 404s exactly like a page that was
+never built.
+
+**Runs anywhere, including Vercel:** document generation uses pure JavaScript libraries
+(`docx` and `pdf-lib`) — no LibreOffice, no native binaries, no filesystem writes at runtime —
+so it works unmodified on serverless hosts. The database is Postgres (any free-tier hosted
+Postgres works), because Vercel's filesystem does not persist a local SQLite file between
+requests.
 
 ---
 
 ## 1. Prerequisites
 
-Install these on the machine that will run the app:
-
 | Requirement | Why | Check with |
 |---|---|---|
 | **Node.js 18.18+** (20 LTS recommended) | Runs Next.js | `node -v` |
-| **npm** (comes with Node) | Installs dependencies | `npm -v` |
-| **LibreOffice** | Converts generated `.docx` files to `.pdf` on demand | `soffice --version` |
+| **npm** | Installs dependencies | `npm -v` |
+| **A Postgres database** | Stores responses | see §3 |
 
-Installing LibreOffice:
-- **Ubuntu/Debian:** `sudo apt-get update && sudo apt-get install -y libreoffice`
-- **macOS:** `brew install --cask libreoffice`
-- **Windows:** download the installer from https://www.libreoffice.org/download/ and make sure
-  the install folder (e.g. `C:\Program Files\LibreOffice\program`) is on your `PATH`, or set the
-  `LIBREOFFICE_PATH`/`SOFFICE_PATH` behavior via the `libreoffice-convert` package if needed.
-
-You need a **PostgreSQL** database (the app no longer uses SQLite, because SQLite does not
-persist on Vercel's serverless filesystem). The easiest free option is
-[Neon](https://neon.tech) (or Supabase): create a project, copy its connection string, and use
-it as `DATABASE_URL` (locally in `.env` and in your Vercel environment variables). You can also
-run Postgres locally (e.g. `npm i -g pg` + a local server) if you prefer.
+That's it — no LibreOffice, no other system packages needed.
 
 ---
 
-## 2. Install & configure
+## 2. Install
 
 ```bash
-# 1. Unzip the project and enter it
-cd atc-it-graduate-questionnaire
-
-# 2. Install dependencies (this also runs `prisma generate` automatically)
+cd atc-it-curriculum-questionnaires
 npm install
-
-# 3. Create your local environment file
 cp .env.example .env
-
-# 4. Generate admin credentials (access code + hidden route)
-#    This writes a compliant admin code (starts with a letter, contains digits,
-#    max 8 chars) and route into `.env`, and prints them. They are also printed
-#    in the server console under the "ADMIN ACCESS" banner when you run the app.
-npm run setup
 ```
-
-Now open `.env` and set **`DATABASE_URL`** to your PostgreSQL connection string (from Neon/
-Supabase/local). The admin `ADMIN_ACCESS_CODE`, `ADMIN_ROUTE_SECRET`, and `ADMIN_SESSION_SECRET`
-were already written by `npm run setup` — change them only if you want different values.
-
-```ini
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?sslmode=require"
-
-# The admin codes below are generated by `npm run setup`;
-# you normally do not need to edit them.
-ADMIN_ACCESS_CODE="choose-a-long-random-code-here"
-ADMIN_ROUTE_SECRET="gatekeeper-7f2c91"
-ADMIN_SESSION_SECRET="paste-a-generated-random-hex-string-here"
-ADMIN_SESSION_HOURS=8
-```
-
-**Keep `.env` out of version control and off any public server directory listing** — it's
-already covered by `.gitignore`.
 
 ---
 
-## 3. Set up the database
+## 3. Get a Postgres database (free options)
 
-This creates the tables the app needs in your PostgreSQL database:
+Any of these work — pick one and copy its connection string:
+
+- **Neon** (neon.tech) — free tier, integrates directly with Vercel's dashboard too.
+- **Supabase** (supabase.com) — free tier.
+- **Vercel Postgres** — from your Vercel project's **Storage** tab, if you're already on Vercel.
+
+Paste the connection string into `.env`:
+
+```ini
+DATABASE_URL="postgresql://user:password@host/dbname?sslmode=require"
+```
+
+Then create the table:
 
 ```bash
 npm run db:push
 ```
 
-Re-run this any time you change `prisma/schema.prisma`.
+---
+
+## 4. Admin access — zero-config by default
+
+You do **not** have to invent an admin code yourself. Leave `ADMIN_ACCESS_CODE` and
+`ADMIN_ROUTE_SECRET` blank in `.env` and just run the app (§5) — on startup it will:
+
+1. Generate both values in the required format (a letter followed by digits, 8 characters
+   total — e.g. `K3948271`).
+2. **Print them in the terminal every time the app starts**, so you always know your current
+   admin login path and code.
+3. Save them to `.env.local` so they stay the same across restarts (until you delete that
+   file or set your own values in `.env`).
+
+Example of what you'll see on startup:
+
+```
+──────────────────────────────────────────────
+ ADMIN ACCESS (auto-generated just now)
+   Login path : /K3948271
+   Access code: A2938471
+──────────────────────────────────────────────
+```
+
+Your admin dashboard is then at `http://localhost:3000/K3948271`.
+
+**For Vercel**, this auto-generation only helps locally — Vercel's filesystem is read-only, so
+values can't be auto-saved there. Generate them once ahead of your first deploy:
+
+```bash
+npm run generate:admin
+```
+
+Copy the two printed values into Vercel's **Project Settings → Environment Variables**
+(along with `DATABASE_URL` and a value for `ADMIN_SESSION_SECRET` — the generator script only
+prints the two access values; `ADMIN_SESSION_SECRET` can be any long random string, e.g. from
+`node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`).
 
 ---
 
-## 4. Run it
+## 5. Run it
 
-**Development mode** (auto-reloads on file changes):
+**Development:**
 
 ```bash
 npm run dev
@@ -109,218 +131,170 @@ npm run dev
 
 Visit `http://localhost:3000`.
 
-**Production mode:**
+**Production (locally):**
 
 ```bash
 npm run build
 npm run start
 ```
 
-By default it serves on port 3000 (`PORT=8080 npm run start` to change it).
+---
+
+## 6. Deploying to Vercel
+
+1. Push this project to a GitHub repository:
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git branch -M main
+   git remote add origin https://github.com/<you>/<repo>.git
+   git push -u origin main
+   ```
+2. In Vercel, **Add New Project** → import that GitHub repo.
+3. Before the first deploy, add these **Environment Variables** in Vercel's project settings:
+   - `DATABASE_URL` — your Postgres connection string (§3)
+   - `ADMIN_ACCESS_CODE` and `ADMIN_ROUTE_SECRET` — from `npm run generate:admin` (§4)
+   - `ADMIN_SESSION_SECRET` — a long random string (§4)
+   - `ADMIN_SESSION_HOURS` — e.g. `8`
+4. Deploy. Vercel runs `npm install` (which runs `prisma generate` via `postinstall`)
+   automatically.
+5. Make sure the database schema exists before/after your first deploy — run once from your
+   own machine, pointed at the same `DATABASE_URL`:
+   ```bash
+   npm run db:push
+   ```
+6. Share the four `/fill/<type>` links, and use `/<ADMIN_ROUTE_SECRET>` for the admin dashboard.
+
+Every subsequent `git push` to your connected branch redeploys automatically.
 
 ---
 
-## 5. Using the app
+## 7. Using the app
 
 | Who | URL | What they can do |
 |---|---|---|
-| Anyone | `/` | Landing page with links to the form and analysis |
-| Anyone | `/fill` | Fill and submit the questionnaire. Respondents can **Save draft** to store progress in the browser and **Load** it later on the same device |
-| Anyone | `/analysis` | View charts of aggregated results across all responses |
+| Anyone | `/` | Landing page with links to all four questionnaires and analysis |
+| Anyone | `/fill/graduate` | Graduates fill their questionnaire |
+| Anyone | `/fill/society` | Society respondents fill theirs |
+| Anyone | `/fill/employer` | Employers fill theirs |
+| Anyone | `/fill/professional` | Professionals fill theirs |
+| Anyone | `/analysis` | Charts of aggregated results, switchable by type |
 | Admin only | `/<ADMIN_ROUTE_SECRET>` | Enter the access code to log in |
-| Admin only | `/<ADMIN_ROUTE_SECRET>/dashboard` | View every response, download individually or in bulk, log out |
+| Admin only | `/<ADMIN_ROUTE_SECRET>/dashboard` | Switch between types, view responses, download, log out |
 
-Example: if you set `ADMIN_ROUTE_SECRET=gatekeeper-7f2c91`, the admin login is at
-`http://localhost:3000/gatekeeper-7f2c91`. Any other made-up path (e.g. `/admin`, `/login`,
-`/gatekeeper-7f2c92`) returns a normal 404.
-
-The admin access code and the hidden route are generated by `npm run setup` (and printed in the
-terminal). There is also a small **"Staff / Admin login"** link in the footer of every page, so you
-don't have to remember the secret URL.
-
-### How to log in as admin (step by step)
-
-1. Open the admin page. Either click **"Staff / Admin login"** in the page footer, or go directly
-   to `http://localhost:3000/<ADMIN_ROUTE_SECRET>` on your machine (e.g. `/nr9zpeo0`), or
-   `https://<your-domain>/<ADMIN_ROUTE_SECRET>` on the live site.
-2. You'll see a **"Restricted Access"** box. Type the **access code** (e.g. `wlj347a7`) and click
-   **Unlock**.
-3. You're in the admin dashboard, where you can view and download every response.
-
-> The **route** (the hidden URL, e.g. `/nr9zpeo0`) and the **access code** (what you type, e.g.
-> `wlj347a7`) are two different things. Do **not** paste the code into the browser address bar —
-> that gives a 404. The code is only typed into the login box.
-
-Where do the code and route come from? Run `npm run setup` — it writes a compliant code (starts
-with a letter, contains digits, max 8 characters) and route into `.env` and prints both. They are
-also printed in the server console under the **ADMIN ACCESS** banner whenever you run `npm run dev`
-(or in the Vercel runtime logs). If you ever forget them, just run `npm run setup` again to
-regenerate them (and copy the new values into your Vercel environment variables — see §11).
-
-The admin session is stored in a signed, `httpOnly` cookie, so it can't be read or forged from
-client-side JavaScript. It expires automatically after `ADMIN_SESSION_HOURS` hours, or
-immediately via the **Log out** button on the dashboard.
+After submitting, a respondent sees **"Download my response (.docx / .pdf)"** — this uses a
+private link tied to their own submission's unguessable ID, so they can keep a copy without
+needing an account.
 
 ---
 
-## 6. How document generation works
+## 8. How the multi-type engine works
 
-- The questionnaire's structure (all sections, skill lists, certification lists, etc.) lives in
-  one place, `lib/schema.ts`, so the form, the database, and the generated documents can never
-  drift out of sync.
-- `lib/docxTemplate.ts` rebuilds the original Word layout in code using the `docx` library —
-  same header table with both logos, same section headings, same rating tables — and marks the
-  boxes/ratings that respondent actually chose.
-- `lib/pdf.ts` converts that exact generated `.docx` to PDF via LibreOffice, so the `.docx` and
-  `.pdf` downloads for a response are always visually identical.
-- `lib/excel.ts` builds the Excel workbook (`exceljs`) used for the "other format" export.
-- Bulk ZIP downloads are streamed with `archiver` so nothing is fully buffered in memory for
-  very large response sets beyond what's needed.
+Instead of writing four almost-identical form/docx/pdf/excel implementations, each
+questionnaire is described **once**, declaratively, as an ordered list of "blocks"
+(`lib/questionnaires/definitions.ts`, built from the vocabulary in `lib/questionnaires/blocks.ts`):
+personal-detail fields, single/multi-choice checklists, 3-level rating matrices, free-text
+boxes, the weighting table, a simple tick-list (used for the Professional questionnaire's
+Alumni Linkage table), and the respondent-details footer.
 
-If you ever need to tweak wording, colors, or table widths, everything is plain TypeScript in
-`lib/docxTemplate.ts` — no XML hacking required.
+Four generic engines each walk that same block list and know how to render every block type:
+
+- `components/QuestionnaireForm.tsx` — the on-screen form
+- `lib/docBuilder.ts` — the `.docx` generator (using the `docx` library)
+- `lib/pdfBuilder.ts` — the `.pdf` generator (using `pdf-lib`, no LibreOffice needed)
+- `lib/excelBuilder.ts` — the Excel export
+- `lib/analyticsBuilder.ts` — the Global Analysis charts
+
+Adding a fifth questionnaire type later means adding one new block list to
+`lib/questionnaires/definitions.ts` — no new form, no new document code.
+
+All four types share one Prisma table (`prisma/schema.prisma`): each row has a `type` column
+and a `data` column holding that type's answers as JSON, validated against its block list on
+the way in and out (`lib/questionnaires/payload.ts`).
 
 ---
 
-## 7. Project structure
+## 9. Project structure
 
 ```
 app/
-  page.tsx                       Landing page
-  fill/page.tsx                  The questionnaire form
-  fill/RatingMatrix.tsx          Reusable 3-column rating table component
-  analysis/page.tsx              Public global analysis dashboard (charts)
-  [...slug]/page.tsx             Hidden admin router (login / dashboard / 404 for everything else)
-  [...slug]/AdminLogin.tsx       Admin login form
-  [...slug]/AdminDashboard.tsx   Admin dashboard UI
-  api/responses/route.ts         POST: submit a response (public) · GET: list all (admin only)
-  api/analysis/route.ts          GET: aggregated analytics (public)
-  api/admin/login/route.ts       POST: verify code, set session cookie
-  api/admin/logout/route.ts      POST: clear session cookie
-  api/admin/download/[id]/docx   GET: one response as .docx (admin only)
-  api/admin/download/[id]/pdf    GET: one response as .pdf (admin only)
-  api/admin/download/all/docx-zip    GET: all responses as .docx, zipped
-  api/admin/download/all/pdf-zip     GET: all responses as .pdf, zipped
-  api/admin/download/all/excel       GET: all responses as one .xlsx
-  api/admin/download/all/full-zip    GET: docx/ + pdf/ + xlsx, all zipped together
+  page.tsx                         Landing page (links to all 4 questionnaires + analysis)
+  fill/[type]/page.tsx              Shareable fill page for one type (graduate/society/employer/professional)
+  analysis/page.tsx                 Public analysis dashboard with a type switcher
+  [...slug]/page.tsx                Hidden admin router (login / dashboard / 404 for everything else)
+  [...slug]/AdminLogin.tsx          Admin login form
+  [...slug]/AdminDashboard.tsx      Admin dashboard with type tabs + all download options
+  api/responses/route.ts            POST: submit (any type, public) - GET: list (admin, ?type=)
+  api/responses/[id]/docx|pdf       Public self-service: respondent's own receipt download
+  api/analysis/route.ts             GET: aggregated analytics for one type (?type=)
+  api/admin/login|logout/route.ts   Admin session endpoints
+  api/admin/download/[type]/[id]/docx|pdf         One response, one type (admin only)
+  api/admin/download/[type]/all/docx-zip|pdf-zip|excel|full-zip   Bulk, one type (admin only)
+  api/admin/download/everything-zip/route.ts      Bulk, ALL types in one ZIP (admin only)
+components/
+  QuestionnaireForm.tsx              Generic block-driven form renderer
 lib/
-  schema.ts        All question/option lists + TypeScript types (single source of truth)
-  db.ts            Prisma client singleton
-  auth.ts          Admin code verification + signed session tokens
-  requireAdmin.ts  Route guard used by every admin API route
-  serialize.ts     Converts between the flat DB row and the nested form payload
-  docxTemplate.ts  Rebuilds the original questionnaire as a .docx for one response
-  pdf.ts           Converts a generated .docx buffer to PDF via LibreOffice
-  excel.ts         Builds the multi-sheet Excel export
-  analytics.ts     Aggregates all responses for the public analysis page
-prisma/schema.prisma  Database schema (SQLite by default)
-public/logos/         The two official logos extracted from the original document
-scripts/test-docx.ts  Standalone script to generate a sample .docx without the DB (see below)
+  questionnaires/
+    blocks.ts                       The block vocabulary (types)
+    definitions.ts                  The four questionnaire definitions (block lists)
+    shared-options.ts                Option lists reused across types
+    payload.ts                      Empty-payload + validation + JSON row <-> payload helpers
+  docBuilder.ts                     Generic .docx generator
+  pdfBuilder.ts                     Generic .pdf generator (pdf-lib)
+  excelBuilder.ts                   Generic Excel generator
+  analyticsBuilder.ts                Generic analytics aggregator
+  db.ts                             Prisma client singleton
+  auth.ts                           Admin code verification + signed session tokens
+  requireAdmin.ts                   Route guard used by every admin API route
+  adminCredentials.ts                Auto-generates/prints admin credentials at startup
+instrumentation.ts                   Runs adminCredentials at server startup (dev, start, and each Vercel cold start)
+prisma/schema.prisma                 One `Response` table (type + JSON data) for all 4 types
+public/logos/                        The two official logos, reused across all generated documents
+scripts/
+  generate-admin-credentials.js      Standalone generator for pre-deploy (Vercel) use
 ```
-
-### Switching from SQLite to Postgres/MySQL later
-
-Change the `datasource` block in `prisma/schema.prisma`:
-
-```prisma
-datasource db {
-  provider = "postgresql" // or "mysql"
-  url      = env("DATABASE_URL")
-}
-```
-
-Update `DATABASE_URL` in `.env` accordingly, then run `npm run db:push` again.
 
 ---
 
-## 8. Sanity-checking the document generator
+## 10. Sanity-checking document generation
 
-You can generate a sample filled document without touching the database or the web server:
+Generate a sample filled document for every type, without touching the database:
 
 ```bash
-npx tsx scripts/test-docx.ts
+npx tsx scripts/test-all-types.ts
 ```
 
-This writes `test-output.docx` using made-up sample answers, so you can open it (or convert it
-with `soffice --headless --convert-to pdf test-output.docx`) and confirm the logos and layout
-look right on your machine before going live.
+This writes `test-<type>.docx` and `test-<type>.pdf` for each of the four types using sample
+answers, so you can open them and confirm the logos and layout look right before going live.
 
 ---
 
-## 9. Troubleshooting
+## 11. Troubleshooting
 
-- **"PDF conversion failed. Is LibreOffice installed and on PATH?"** — install LibreOffice (see
-  §1) and make sure the `soffice` command works from a terminal. Restart the Next.js server
-  after installing.
-- **`prisma generate` fails to download an engine binary** — this happens if the machine (or a
-  sandboxed CI runner) can't reach `binaries.prisma.sh`. On a normal machine with internet
-  access this resolves itself; behind a strict corporate firewall, allow that domain or see
-  Prisma's docs on `PRISMA_ENGINES_MIRROR`.
-- **Admin login always says "Incorrect code"** — double-check `ADMIN_ACCESS_CODE` in `.env` has
-  no trailing spaces, and that you restarted the server after editing `.env`.
-- **Forgot the admin path** — it's whatever you set `ADMIN_ROUTE_SECRET` to in `.env`; open that
-  file to check or change it (then restart the server).
-
----
-
-## 10. Security notes
-
-- Change `ADMIN_ACCESS_CODE`, `ADMIN_ROUTE_SECRET`, and `ADMIN_SESSION_SECRET` from the sample
-  values before deploying anywhere reachable by the public.
-- Serve the site over **HTTPS** in production — the session cookie is marked `secure` whenever
-  `NODE_ENV=production`, which requires HTTPS to actually be sent by the browser.
-- The admin code is compared using a constant-time check to resist timing attacks, and the
-  session cookie is `httpOnly` (invisible to page JavaScript) and signed (can't be forged
-  without `ADMIN_SESSION_SECRET`).
-- Consider putting the whole app behind a firewall/VPN if respondents should only be able to
-  reach it from a specific network.
+- **"Failed to save response"** — almost always means `DATABASE_URL` isn't reachable or
+  `npm run db:push` hasn't been run yet against it. Re-check §3, then re-run `npm run db:push`.
+- **`prisma generate` fails to download an engine binary** — the machine can't reach
+  `binaries.prisma.sh` (e.g. behind a strict firewall or in a sandboxed CI runner). Normal
+  internet access resolves this.
+- **Admin login always says "Incorrect code"** — check the terminal output at startup (§4) for
+  the current code, and make sure you restarted the server after editing `.env`.
+- **Forgot the admin path** — check the startup console output, or open `.env.local`
+  (local dev) / your Vercel environment variables (production).
+- **Deployed to Vercel but admin credentials keep changing** — you must set
+  `ADMIN_ACCESS_CODE` and `ADMIN_ROUTE_SECRET` explicitly in Vercel's dashboard (§4/§6);
+  auto-generation only persists on a writable local filesystem.
 
 ---
 
-## 11. Deploying to Vercel (and pushing to GitHub)
+## 12. Security notes
 
-The app is a standard Next.js project and deploys to Vercel. Two things differ from local
-development:
-### 11.1 Database — PostgreSQL (already the default)
-
-The app already uses **PostgreSQL** (`provider = "postgresql"` in `prisma/schema.prisma`), so no
-code change is needed. Vercel's serverless filesystem is ephemeral/read-only, so a database
-service is required. Use a hosted Postgres (Neon, Supabase, or Vercel Postgres) — any gives you
-a `DATABASE_URL` connection string.
-
-1. Create a Postgres database and copy its connection string.
-2. In your Vercel project **Environment Variables**, set:
-   - `DATABASE_URL` → your Postgres connection string
-   - `ADMIN_ACCESS_CODE`, `ADMIN_ROUTE_SECRET`, `ADMIN_SESSION_SECRET`,
-     `ADMIN_SESSION_HOURS` → the same values as your local `.env` (printed by `npm run setup`)
-3. The `vercel-build` script (`prisma generate && prisma db push && next build`) creates the
-   tables automatically on every deploy, so there is no separate migrate step.
-
-### 11.2 PDF export limitation on Vercel
-
-The **Word (.docx)**, **Excel (.xlsx)**, and bulk **.docx-zip** downloads are pure-JS and work on
-Vercel. The **PDF** and **full-zip** downloads rely on LibreOffice (`soffice`), which is not
-available in Vercel's runtime — those two endpoints return a clear error instead of crashing. If
-you need PDFs on Vercel, either:
-
-- host on a VPS / Docker image with LibreOffice installed, or
-- replace `lib/pdf.ts` with a serverless PDF renderer (e.g. a headless-Chromium/Puppeteer
-  approach), or
-- only offer the `.docx` download (visually identical) to respondents.
-
-### 11.3 Push to GitHub and deploy
-
-```bash
-# from the project root
-git init
-git add .
-git commit -m "ATC IT graduate questionnaire portal"
-git remote add origin https://github.com/mwala400/graduate-questionnaire
-
-git branch -M main
-git push -u origin main
-```
-
-Then in Vercel: **New Project → Import Git Repository**, pick the repo, and Deploy. Vercel
-detects Next.js, runs `vercel-build`, and goes live. Set the environment variables above before
-the first deploy (or redeploy after adding them).
+- Change the auto-generated `ADMIN_ACCESS_CODE`/`ADMIN_ROUTE_SECRET` any time you suspect
+  they've leaked — just delete `.env.local` (locally) or update Vercel's environment variables
+  and redeploy.
+- Serve the site over **HTTPS** in production (Vercel does this by default) — the session
+  cookie is marked `secure` whenever `NODE_ENV=production`.
+- The admin code is compared using a constant-time check to resist timing attacks; the session
+  cookie is `httpOnly` (invisible to page JavaScript) and signed.
+- Self-service receipt links (`/api/responses/<id>/docx|pdf`) rely on the response ID being
+  unguessable (a cuid) — there is no endpoint that lists or enumerates other people's IDs.

@@ -1,11 +1,10 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { timingSafeEqual } from 'crypto';
-import { ADMIN_ACCESS_CODE, ADMIN_SESSION_SECRET, ADMIN_SESSION_HOURS } from './adminConfig';
 
 export const ADMIN_COOKIE_NAME = 'atc_admin_session';
 
 function getSecretKey() {
-  const secret = ADMIN_SESSION_SECRET;
+  const secret = process.env.ADMIN_SESSION_SECRET;
   if (!secret || secret.length < 16) {
     throw new Error(
       'ADMIN_SESSION_SECRET is missing or too short. Set a long random value in your .env file.'
@@ -16,7 +15,7 @@ function getSecretKey() {
 
 /** Constant-time comparison so the admin code can't be brute-forced via timing. */
 export function isValidAdminCode(candidate: string): boolean {
-  const expected = ADMIN_ACCESS_CODE || '';
+  const expected = process.env.ADMIN_ACCESS_CODE || '';
   if (!expected || !candidate) return false;
   const a = Buffer.from(candidate);
   const b = Buffer.from(expected);
@@ -30,7 +29,7 @@ export function isValidAdminCode(candidate: string): boolean {
 }
 
 export async function createAdminSessionToken(): Promise<string> {
-  const hours = ADMIN_SESSION_HOURS;
+  const hours = Number(process.env.ADMIN_SESSION_HOURS || 8);
   const key = getSecretKey();
   return await new SignJWT({ role: 'admin' })
     .setProtectedHeader({ alg: 'HS256' })

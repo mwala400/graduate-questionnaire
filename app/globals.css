@@ -113,32 +113,18 @@ table.matrix td.label { text-align: left; }
 .alert { padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 14px; }
 .alert.success { background: #e6f6ea; color: #1b7a3e; border: 1px solid #b7e2c3; }
 .alert.error { background: #fdeceb; color: #a4231a; border: 1px solid #f5c2bd; }
-.alert.info { background: #eaf2fb; color: #1b4f8a; border: 1px solid #bcd6f2; }
 
 table.admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 table.admin-table th, table.admin-table td { border: 1px solid var(--border); padding: 8px; text-align: left; }
 table.admin-table th { background: #eef1f3; }
 
+.alert.info { background: #eaf2fb; color: #0b3d91; border: 1px solid #b9d2f3; }
+
+.site-footer { max-width: 960px; margin: 0 auto; padding: 26px 16px 40px; text-align: center; }
+.staff-link { font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; }
+.staff-link:hover { color: var(--tz-blue); border-color: var(--tz-blue); }
+
+.draft-link-row { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+.draft-link-row input { flex: 1; padding: 7px 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; background: #fff; }
+
 .login-box { max-width: 380px; margin: 80px auto; }
-
-.site-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  max-width: 960px;
-  margin: 36px auto 28px;
-  padding: 14px 18px;
-  font-size: 12px;
-  color: var(--muted);
-  border-top: 1px solid var(--border);
-}
-
-.admin-link {
-  font-size: 12px;
-  color: var(--tz-blue);
-  text-decoration: none;
-}
-
-.admin-link:hover { text-decoration: underline; }

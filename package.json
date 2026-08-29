@@ -1,16 +1,16 @@
 {
-  "name": "atc-it-graduate-questionnaire",
-  "version": "1.0.0",
+  "name": "atc-it-curriculum-questionnaires",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:sqlite": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "prisma generate",
-    "db:push": "prisma db push",
+    "postinstall": "node scripts/setup-prisma.js && prisma generate",
+    "db:push": "node scripts/setup-prisma.js && prisma db push",
     "db:studio": "prisma studio",
-    "vercel-build": "prisma generate && prisma db push && next build",
-    "setup": "tsx scripts/setup.ts"
+    "generate:admin": "node scripts/generate-admin-credentials.js"
   },
   "dependencies": {
     "@prisma/client": "5.19.1",
@@ -18,8 +18,8 @@
     "docx": "9.0.2",
     "exceljs": "4.4.0",
     "jose": "5.9.6",
-    "libreoffice-convert": "1.6.0",
     "next": "14.2.35",
+    "pdf-lib": "1.17.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "recharts": "2.12.7"
@@ -29,7 +29,7 @@
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "prisma": "5.19.1",
-    "tsx": "^4.23.12",
+    "tsx": "4.19.1",
     "typescript": "5.5.3"
   }
 }

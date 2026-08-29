@@ -7,7 +7,7 @@ datasource db {
   // scripts/setup-prisma.js:
   //   - postgresql://... or postgres://...  -> postgresql (Vercel / production)
   //   - file:... or sqlite:...              -> sqlite    (local dev, zero setup)
-  provider = "sqlite"
+  provider = "__PROVIDER__"
   url      = env("DATABASE_URL")
 }
 

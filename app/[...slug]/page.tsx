@@ -1,7 +1,6 @@
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import { ADMIN_COOKIE_NAME, verifyAdminSessionToken } from '@/lib/auth';
-import { ADMIN_ROUTE_SECRET } from '@/lib/adminConfig';
 import AdminLogin from './AdminLogin';
 import AdminDashboard from './AdminDashboard';
 
@@ -10,7 +9,7 @@ import AdminDashboard from './AdminDashboard';
 // exactly match the ADMIN_ROUTE_SECRET from .env renders a completely
 // ordinary Next.js 404 — identical to a path that was never a route at all.
 export default async function CatchAllPage({ params }: { params: { slug: string[] } }) {
-  const secret = ADMIN_ROUTE_SECRET;
+  const secret = process.env.ADMIN_ROUTE_SECRET;
   if (!secret) {
     // Misconfigured deployment: fail closed, not open.
     notFound();
