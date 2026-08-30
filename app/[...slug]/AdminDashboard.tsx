@@ -39,6 +39,45 @@ export default function AdminDashboard({ loginPath }: { loginPath: string }) {
     router.refresh();
   }
 
+  async function handleDeleteOne(id: string) {
+    if (!window.confirm('Delete this response permanently? This cannot be undone.')) return;
+    const res = await fetch(`/api/responses/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      load(activeType);
+    } else {
+      alert('Could not delete this response.');
+    }
+  }
+
+  async function handleDeleteType() {
+    if (!window.confirm(`Delete ALL ${activeDef.label} responses? This cannot be undone.`)) return;
+    const res = await fetch(`/api/responses?type=${activeType}`, { method: 'DELETE' });
+    if (res.ok) {
+      load(activeType);
+    } else {
+      alert('Could not delete responses.');
+    }
+  }
+
+  async function handleDeleteEverything() {
+    const code = window.prompt(
+      'This deletes ALL responses of ALL types permanently.\nType your admin access code to confirm:'
+    );
+    if (code === null) return;
+    const res = await fetch('/api/responses?all=true', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    if (res.ok) {
+      load(activeType);
+      alert('All responses deleted.');
+    } else {
+      const d = await res.json().catch(() => ({}));
+      alert('Failed: ' + (d.error || res.status));
+    }
+  }
+
   const activeDef = ALL_TYPES.find((d) => d.key === activeType)!;
 
   // Pick a couple of representative columns per type for the quick-glance table.
@@ -95,12 +134,30 @@ export default function AdminDashboard({ loginPath }: { loginPath: string }) {
             Download Full Folder (docx + pdf + Excel)
           </a>
         </div>
+        <div style={{ marginTop: 10 }}>
+          <button
+            className="btn ghost"
+            style={{ color: '#a4231a', borderColor: '#f5c2bd' }}
+            onClick={handleDeleteType}
+          >
+            Delete all {activeDef.shortLabel} responses
+          </button>
+        </div>
 
         <h3 style={{ marginTop: 20 }}>Everything, every type</h3>
         <div className="btn-row">
           <a className="btn ghost" href="/api/admin/download/everything-zip">
             Download ALL questionnaire types (one ZIP, organized by folder)
           </a>
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <button
+            className="btn ghost"
+            style={{ color: '#a4231a', borderColor: '#f5c2bd' }}
+            onClick={handleDeleteEverything}
+          >
+            Delete EVERYTHING (all types) — requires admin code
+          </button>
         </div>
       </div>
 
@@ -133,6 +190,13 @@ export default function AdminDashboard({ loginPath }: { loginPath: string }) {
                       <a className="btn ghost" style={{ padding: '4px 10px', fontSize: 12 }} href={`/api/admin/download/${r.type}/${r.id}/pdf`}>
                         .pdf
                       </a>
+                      <button
+                        className="btn ghost"
+                        style={{ padding: '4px 10px', fontSize: 12, marginLeft: 6, color: '#a4231a', borderColor: '#f5c2bd' }}
+                        onClick={() => handleDeleteOne(r.id)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}

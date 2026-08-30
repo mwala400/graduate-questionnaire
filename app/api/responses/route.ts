@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { isAdminRequest } from '@/lib/requireAdmin';
+import { isValidAdminCode } from '@/lib/auth';
 import { getDef } from '@/lib/questionnaires/definitions';
 import { isPayloadShapeValid, payloadToRowData, rowToPayload } from '@/lib/questionnaires/payload';
 
@@ -39,4 +40,30 @@ export async function GET(req: NextRequest) {
   });
   const list = rows.map((r) => ({ id: r.id, type: r.type, createdAt: r.createdAt, data: rowToPayload(r) }));
   return NextResponse.json({ responses: list });
+}
+
+export async function DELETE(req: NextRequest) {
+  if (!(await isAdminRequest())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const all = req.nextUrl.searchParams.get('all') === 'true';
+  const type = req.nextUrl.searchParams.get('type') || undefined;
+
+  if (all) {
+    // Irreversible mass deletion: require the admin access code as a second factor.
+    const { code } = await req.json().catch(() => ({ code: '' }));
+    if (typeof code !== 'string' || !isValidAdminCode(code)) {
+      return NextResponse.json({ error: 'Admin access code required to delete all responses' }, { status: 403 });
+    }
+    await prisma.response.deleteMany({});
+    return NextResponse.json({ ok: true, deleted: 'all' });
+  }
+
+  if (type) {
+    await prisma.response.deleteMany({ where: { type } });
+    return NextResponse.json({ ok: true, deleted: type });
+  }
+
+  return NextResponse.json({ error: 'Specify ?type=<type> or ?all=true' }, { status: 400 });
 }
