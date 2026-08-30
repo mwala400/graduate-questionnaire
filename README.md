@@ -298,3 +298,15 @@ answers, so you can open them and confirm the logos and layout look right before
   cookie is `httpOnly` (invisible to page JavaScript) and signed.
 - Self-service receipt links (`/api/responses/<id>/docx|pdf`) rely on the response ID being
   unguessable (a cuid) — there is no endpoint that lists or enumerates other people's IDs.
+
+---
+
+## 13. Deleting responses (admin only)
+
+The admin dashboard lets you remove data:
+- **Single response** — a *Delete* button per row (asks for confirmation).
+- **All responses of one type** — *Delete all {Type} responses* (asks for the admin access code).
+- **Everything, all types** — *Delete EVERYTHING (all types)* (asks for the admin access code).
+
+Bulk deletions are irreversible and require the admin access code as a second factor. Single
+deletes need only the logged-in admin session.
