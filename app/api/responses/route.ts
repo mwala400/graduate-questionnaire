@@ -50,20 +50,20 @@ export async function DELETE(req: NextRequest) {
   const all = req.nextUrl.searchParams.get('all') === 'true';
   const type = req.nextUrl.searchParams.get('type') || undefined;
 
+  // Any bulk deletion (a whole type, or everything) is irreversible, so it
+  // requires the admin access code as a second factor.
+  if (!all && !type) {
+    return NextResponse.json({ error: 'Specify ?type=<type> or ?all=true' }, { status: 400 });
+  }
+  const { code } = await req.json().catch(() => ({ code: '' }));
+  if (typeof code !== 'string' || !isValidAdminCode(code)) {
+    return NextResponse.json({ error: 'Admin access code required to delete responses in bulk' }, { status: 403 });
+  }
+
   if (all) {
-    // Irreversible mass deletion: require the admin access code as a second factor.
-    const { code } = await req.json().catch(() => ({ code: '' }));
-    if (typeof code !== 'string' || !isValidAdminCode(code)) {
-      return NextResponse.json({ error: 'Admin access code required to delete all responses' }, { status: 403 });
-    }
     await prisma.response.deleteMany({});
     return NextResponse.json({ ok: true, deleted: 'all' });
   }
-
-  if (type) {
-    await prisma.response.deleteMany({ where: { type } });
-    return NextResponse.json({ ok: true, deleted: type });
-  }
-
-  return NextResponse.json({ error: 'Specify ?type=<type> or ?all=true' }, { status: 400 });
+  await prisma.response.deleteMany({ where: { type } });
+  return NextResponse.json({ ok: true, deleted: type });
 }

@@ -50,12 +50,20 @@ export default function AdminDashboard({ loginPath }: { loginPath: string }) {
   }
 
   async function handleDeleteType() {
-    if (!window.confirm(`Delete ALL ${activeDef.label} responses? This cannot be undone.`)) return;
-    const res = await fetch(`/api/responses?type=${activeType}`, { method: 'DELETE' });
+    const code = window.prompt(
+      `This deletes ALL ${activeDef.label} responses permanently.\nType your admin access code to confirm:`
+    );
+    if (code === null) return;
+    const res = await fetch(`/api/responses?type=${activeType}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
     if (res.ok) {
       load(activeType);
     } else {
-      alert('Could not delete responses.');
+      const d = await res.json().catch(() => ({}));
+      alert('Failed: ' + (d.error || res.status));
     }
   }
 
