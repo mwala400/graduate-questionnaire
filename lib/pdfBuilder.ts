@@ -184,6 +184,17 @@ class PdfCanvas {
 
 async function drawHeader(c: PdfCanvas, def: QuestionnaireDef) {
   if (def.key === 'entrepreneurship') {
+    const atcBytes = loadLogo('atc-logo.png');
+    const atc = await c.doc.embedPng(atcBytes);
+    const logoH = 62;
+    const atcDims = atc.scale(logoH / atc.height);
+    c.page.drawImage(atc, {
+      x: (PAGE_WIDTH - atcDims.width) / 2,
+      y: c.y - logoH,
+      width: atcDims.width,
+      height: logoH
+    });
+    c.y -= logoH + 14;
     c.drawParagraph('ENTREPRENEURSHIP CENTRE', { bold: true, align: 'center', size: 12, gapAfter: 4 });
     c.drawParagraph(def.docTitle, { bold: true, align: 'center', size: 11.5, gapAfter: 10 });
     return;

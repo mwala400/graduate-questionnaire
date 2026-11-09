@@ -140,7 +140,13 @@ function weightingTable(chosenColumn: string | undefined, otherValues: Record<st
 
 function headerBlock(def: QuestionnaireDef) {
   if (def.key === 'entrepreneurship') {
+    const atcBytes = loadLogo('atc-logo.png');
     return [
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 60 },
+        children: [new ImageRun({ data: atcBytes, transformation: { width: 70, height: 78 }, type: 'png' })]
+      }),
       new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 60 }, children: [new TextRun({ text: 'ENTREPRENEURSHIP CENTRE', bold: true })] }),
       new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 100 }, children: [new TextRun({ text: def.docTitle, bold: true })] })
     ];

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { ALL_TYPES } from '@/lib/questionnaires/definitions';
 
 interface ChartSection {
   key: string;
@@ -60,7 +59,7 @@ function MatrixChart({ section }: { section: ChartSection }) {
 }
 
 export default function AnalysisPage() {
-  const [type, setType] = useState(ALL_TYPES[0].key);
+  const [type, setType] = useState('entrepreneurship');
   const [data, setData] = useState<AnalyticsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,12 +79,10 @@ export default function AnalysisPage() {
       <div className="card">
         <h2 className="section-title">Global Analysis</h2>
         <div className="btn-row">
-          {ALL_TYPES.map((def) => (
-            <button key={def.key} className={type === def.key ? 'btn' : 'btn ghost'} onClick={() => setType(def.key)}>
-              {def.shortLabel}
-            </button>
-          ))}
-        </div>
+        <button className="btn" disabled>
+          Entrepreneurship
+        </button>
+      </div>
       </div>
 
       {error && <div className="card">Failed to load analysis: {error}</div>}

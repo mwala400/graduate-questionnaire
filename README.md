@@ -81,6 +81,8 @@ Then create the table:
 npm run db:push
 ```
 
+> **Important — separate database:** This is a separate project from the diploma curriculum-review portal. Do **not** point `DATABASE_URL` at the same Postgres database used by the previous project, or the `Response`/`Draft` tables will be shared. Create a **new** Postgres database (Neon, Supabase, or Vercel Postgres) for this Entrepreneurship Centre project and use its connection string here.
+
 ---
 
 ## 4. Admin access — zero-config by default

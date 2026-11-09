@@ -12,7 +12,7 @@ interface ResponseRow {
 }
 
 export default function AdminDashboard({ loginPath }: { loginPath: string }) {
-  const [activeType, setActiveType] = useState(ALL_TYPES[0].key);
+  const [activeType, setActiveType] = useState('entrepreneurship');
   const [rows, setRows] = useState<ResponseRow[] | null>(null);
   const [error, setError] = useState('');
   const router = useRouter();
@@ -123,11 +123,9 @@ export default function AdminDashboard({ loginPath }: { loginPath: string }) {
 
         <h3 style={{ marginTop: 16 }}>Questionnaire type</h3>
         <div className="btn-row">
-          {ALL_TYPES.map((def) => (
-            <button key={def.key} className={activeType === def.key ? 'btn' : 'btn ghost'} onClick={() => setActiveType(def.key)}>
-              {def.shortLabel}
-            </button>
-          ))}
+          <button className="btn" disabled>
+            Entrepreneurship
+          </button>
         </div>
         <p className="muted">Total {activeDef.label.toLowerCase()} responses: {rows ? rows.length : '…'}</p>
 
