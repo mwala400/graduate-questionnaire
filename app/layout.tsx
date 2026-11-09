@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'ATC IT Curriculum Review Questionnaires',
-  description: 'Curriculum review questionnaires (Graduate, Society, Employer, Professional) for the Ordinary Diploma in Information Technology, Arusha Technical College'
+  title: 'Entrepreneurship Centre — Arusha Technical College',
+  description: 'Training Needs Assessment Questionnaire for the Entrepreneurship Centre, Arusha Technical College'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -14,17 +14,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <header className="top-header">
           <div className="top-header-inner">
-            <img src="/logos/tanzania-emblem.png" alt="United Republic of Tanzania emblem" />
             <div>
-              <h1>THE UNITED REPUBLIC OF TANZANIA — MINISTRY OF EDUCATION, SCIENCE AND TECHNOLOGY</h1>
-              <p>Arusha Technical College — Curriculum Review Questionnaires (Diploma in IT)</p>
+              <h1>ARUSHA TECHNICAL COLLEGE</h1>
+              <p>Entrepreneurship Centre</p>
             </div>
-            <img src="/logos/atc-logo.png" alt="Arusha Technical College logo" />
           </div>
         </header>
         {children}
         <footer className="site-footer">
-          <p className="muted">Arusha Technical College — Curriculum Review Portal</p>
+          <p className="muted">Entrepreneurship Centre, Arusha Technical College — Training Needs Assessment</p>
           {staffHref && (
             <p>
               <a className="staff-link" href={staffHref}>
