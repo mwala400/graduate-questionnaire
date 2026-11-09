@@ -101,7 +101,18 @@ function ratingMatrixTable(title: string, items: string[], answers: Record<strin
         ]
       })
   );
-  return new Table({ width: { size: 9000, type: WidthType.DXA }, rows: [headerRow, ...rows] });
+  return new Table({
+    width: { size: 9000, type: WidthType.DXA },
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 4, color: '000000' },
+      bottom: { style: BorderStyle.SINGLE, size: 4, color: '000000' },
+      left: { style: BorderStyle.SINGLE, size: 4, color: '000000' },
+      right: { style: BorderStyle.SINGLE, size: 4, color: '000000' },
+      insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: '000000' },
+      insideVertical: { style: BorderStyle.SINGLE, size: 4, color: '000000' }
+    },
+    rows: [headerRow, ...rows]
+  });
 }
 
 function booleanListTable(title: string, items: string[], selected: string[]) {
