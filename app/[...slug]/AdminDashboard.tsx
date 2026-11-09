@@ -24,6 +24,10 @@ export default function AdminDashboard({ loginPath }: { loginPath: string }) {
       router.push(loginPath);
       return;
     }
+    if (!res.ok) {
+      setError(`Failed to load responses (${res.status})`);
+      return;
+    }
     const data = await res.json();
     setRows(data.responses);
   }
@@ -110,7 +114,7 @@ export default function AdminDashboard({ loginPath }: { loginPath: string }) {
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 className="section-title" style={{ border: 'none', margin: 0 }}>
-            Admin Dashboard
+            ARUSHA TECHNICAL COLLEGE — Admin Dashboard
           </h2>
           <button className="btn ghost" onClick={handleLogout}>
             Log out

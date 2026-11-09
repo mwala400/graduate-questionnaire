@@ -166,9 +166,8 @@ function headerBlock(docTitle: string) {
             width: { size: 5400, type: WidthType.DXA },
             verticalAlign: VerticalAlign.CENTER,
             children: [
-              new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'THE UNITED REPUBLIC OF TANZANIA', bold: true })] }),
-              new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'MINISTRY OF EDUCATION, SCIENCE AND TECHNOLOGY', bold: true })] }),
-              new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'ARUSHA TECHNICAL COLLEGE', bold: true })] })
+              new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'ARUSHA TECHNICAL COLLEGE', bold: true })] }),
+              new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'Entrepreneurship Centre', bold: true })] })
             ]
           }),
           new TableCell({
@@ -189,8 +188,7 @@ function headerBlock(docTitle: string) {
   return [
     headerTable,
     new Paragraph({ text: '' }),
-    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 100 }, children: [new TextRun({ text: docTitle, bold: true })] }),
-    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 200 }, children: [new TextRun({ text: '(NTA LEVEL 4–6)', bold: true })] })
+    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 100 }, children: [new TextRun({ text: docTitle, bold: true })] })
   ];
 }
 

@@ -67,7 +67,10 @@ export default function AnalysisPage() {
   useEffect(() => {
     setData(null);
     fetch(`/api/analysis?type=${type}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`Analysis request failed (${r.status})`);
+        return r.json();
+      })
       .then(setData)
       .catch((e) => setError(String(e)));
   }, [type]);

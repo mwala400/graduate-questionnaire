@@ -196,7 +196,7 @@ async function drawHeader(c: PdfCanvas, docTitle: string) {
   c.page.drawImage(emblem, { x: MARGIN, y: topY - logoH, width: emblemDims.width, height: logoH });
   c.page.drawImage(atc, { x: PAGE_WIDTH - MARGIN - atcDims.width, y: topY - logoH, width: atcDims.width, height: logoH });
 
-  const lines = ['THE UNITED REPUBLIC OF TANZANIA', 'MINISTRY OF EDUCATION, SCIENCE AND TECHNOLOGY', 'ARUSHA TECHNICAL COLLEGE'];
+  const lines = ['ARUSHA TECHNICAL COLLEGE', 'Entrepreneurship Centre'];
   let ty = topY - 14;
   for (const line of lines) {
     const size = 10.5;
@@ -207,7 +207,6 @@ async function drawHeader(c: PdfCanvas, docTitle: string) {
   c.y = topY - logoH - 12;
 
   c.drawParagraph(docTitle, { bold: true, align: 'center', size: 11.5, gapAfter: 4 });
-  c.drawParagraph('(NTA LEVEL 4–6)', { bold: true, align: 'center', size: 10.5, gapAfter: 10 });
 }
 
 function drawRatingMatrix(c: PdfCanvas, title: string, items: string[], answers: Record<string, string>, levels: readonly string[] = RATING_LEVELS) {
