@@ -28,13 +28,14 @@ export function buildQuestionnaireAnalytics(def: QuestionnaireDef, payloads: Pay
         data: block.options.map((opt) => ({ name: opt, count: payloads.filter((p) => (p[block.key] || []).includes(opt)).length }))
       });
     } else if (block.type === 'matrix') {
+      const levels = block.levels ?? RATING_LEVELS;
       sections.push({
         key: block.key,
         title: block.title,
         kind: 'matrix',
         data: block.items.map((item) => {
           const entry: Record<string, number | string> = { name: item };
-          RATING_LEVELS.forEach((lvl) => {
+          levels.forEach((lvl) => {
             entry[lvl] = payloads.filter((p) => (p[block.key] || {})[item] === lvl).length;
           });
           return entry;

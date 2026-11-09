@@ -210,17 +210,15 @@ async function drawHeader(c: PdfCanvas, docTitle: string) {
   c.drawParagraph('(NTA LEVEL 4–6)', { bold: true, align: 'center', size: 10.5, gapAfter: 10 });
 }
 
-function drawRatingMatrix(c: PdfCanvas, title: string, items: string[], answers: Record<string, string>) {
+function drawRatingMatrix(c: PdfCanvas, title: string, items: string[], answers: Record<string, string>, levels: readonly string[] = RATING_LEVELS) {
   const snW = 26;
   const ratingW = 78;
-  const labelW = CONTENT_WIDTH - snW - ratingW * 3;
+  const labelW = CONTENT_WIDTH - snW - ratingW * levels.length;
   c.drawTableRow(
     [
       { width: snW, text: 'S/N', align: 'center' },
       { width: labelW, text: title },
-      { width: ratingW, text: 'Highly Recommended', align: 'center' },
-      { width: ratingW, text: 'Recommended', align: 'center' },
-      { width: ratingW, text: 'Not Recommended', align: 'center' }
+      ...levels.map((lvl) => ({ width: ratingW, text: lvl, align: 'center' as const }))
     ],
     { header: true }
   );
@@ -228,7 +226,7 @@ function drawRatingMatrix(c: PdfCanvas, title: string, items: string[], answers:
     c.drawTableRow([
       { width: snW, text: String(idx + 1), align: 'center' },
       { width: labelW, text: item },
-      ...RATING_LEVELS.map((lvl) => ({ width: ratingW, checkbox: answers?.[item] === lvl }))
+      ...levels.map((lvl) => ({ width: ratingW, checkbox: answers?.[item] === lvl }))
     ]);
   });
 }
@@ -291,8 +289,9 @@ async function renderBlock(c: PdfCanvas, block: Block, payload: Payload) {
     case 'multi':
       c.drawChecklist(block.options, payload[block.key] || [], block.otherTrigger, block.otherKey ? payload[block.otherKey] : undefined);
       return;
-    case 'matrix':
-      drawRatingMatrix(c, block.title, block.items, payload[block.key] || {});
+    case 'matrix': {
+      const levels = block.levels ?? RATING_LEVELS;
+      drawRatingMatrix(c, block.title, block.items, payload[block.key] || {}, levels);
       if (block.otherKey) {
         c.drawGap(4);
         c.drawParagraph(`${block.otherLabel || 'Other'}: ${payload[block.otherKey] || '—'}`, { size: 9.5, gapAfter: 8 });
@@ -300,6 +299,7 @@ async function renderBlock(c: PdfCanvas, block: Block, payload: Payload) {
         c.drawGap(8);
       }
       return;
+    }
     case 'boolean-list':
       drawBooleanList(c, block.title, block.items, payload[block.key] || []);
       c.drawGap(8);

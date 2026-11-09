@@ -1,18 +1,36 @@
 import { Block, QuestionnaireDef } from './blocks';
 import {
   ACTIVITY_OPTIONS,
+  AFFORD_OPTIONS,
   ALUMNI_LINKAGE_ITEMS,
+  AGE_OPTIONS,
   ATTACHMENT_DURATIONS,
+  BUSINESS_PERIOD_OPTIONS,
+  BUSINESS_SITUATION_OPTIONS,
+  CHALLENGES_OPTIONS,
   CERTIFICATIONS,
   COLLABORATION_OPTIONS,
+  CONTACT_OPTIONS,
+  DURATION_OPTIONS,
+  EDUCATION_OPTIONS,
+  GENDER_OPTIONS,
   ICT_STAFF_COUNTS,
   INDUSTRY_TYPES,
+  LANGUAGE_OPTIONS,
+  METHODS_OPTIONS,
+  MODE_OPTIONS,
   PRACTICAL_ACTIVITIES,
   PROFESSIONAL_SKILLS,
   RECRUIT_COUNTS,
+  REGISTRATION_OPTIONS,
+  RESPONDENT_GROUPS,
   SOFT_SKILLS,
   SPECIALIZATIONS,
-  STATUS_OPTIONS
+  STATUS_OPTIONS,
+  SUPPORT_OPTIONS,
+  TIME_OPTIONS,
+  TRAINING_AREAS,
+  TRAINING_NEED_LEVELS
 } from './shared-options';
 
 const INTRO_PARAGRAPH =
@@ -192,11 +210,120 @@ export const PROFESSIONAL_DEF: QuestionnaireDef = {
   ]
 };
 
+// ---------------------------------------------------------------------
+// ENTREPRENEURSHIP CENTRE — Training Needs Assessment (Arusha Technical College)
+// ---------------------------------------------------------------------
+
+const ENTREPRENEURSHIP_INTRO_PARAGRAPH =
+  'The Entrepreneurship Centre at Arusha Technical College plans to offer practical short courses to help people start, run and grow their own businesses. This questionnaire will help us understand what you want to learn, so that we can design courses that meet your needs. It takes about 10 minutes to complete. Your answers will be kept confidential and used only to plan training.';
+
+const entrepreneurshipIntroBlocks: Block[] = [
+  { type: 'subheading', text: 'Introduction' },
+  { type: 'paragraph', text: 'Dear Respondent,' },
+  { type: 'paragraph', text: ENTREPRENEURSHIP_INTRO_PARAGRAPH },
+  { type: 'paragraph', text: 'Thank you for your time.' }
+];
+
+const sectionABlocks: Block[] = [
+  { type: 'heading', text: 'Section A: About you' },
+  { type: 'subheading', text: "1. Which group best describes you? (Tick one)" },
+  { type: 'single', key: 'group', options: RESPONDENT_GROUPS, otherTrigger: 'Other', otherKey: 'groupOther' },
+  { type: 'subheading', text: '2. Gender' },
+  { type: 'single', key: 'gender', options: GENDER_OPTIONS },
+  { type: 'subheading', text: '3. Age' },
+  { type: 'single', key: 'age', options: AGE_OPTIONS },
+  { type: 'subheading', text: '4. Highest level of education' },
+  { type: 'single', key: 'education', options: EDUCATION_OPTIONS },
+  { type: 'subheading', text: '5. Location (ward / district)' },
+  {
+    type: 'fields',
+    fields: [
+      { key: 'location', label: 'Location (ward / district)' },
+      { key: 'phone', label: 'Phone number (optional)', kind: 'tel' }
+    ]
+  }
+];
+
+const sectionBBlocks: Block[] = [
+  { type: 'heading', text: 'Section B: Your business situation' },
+  { type: 'subheading', text: '7. Do you currently own or run a business?' },
+  { type: 'single', key: 'ownBusiness', options: BUSINESS_SITUATION_OPTIONS },
+  { type: 'subheading', text: "8. If yes, what type of business and for how long?" },
+  { type: 'text', key: 'businessType', label: 'Type of business' },
+  { type: 'subheading', text: 'Period' },
+  { type: 'single', key: 'businessPeriod', options: BUSINESS_PERIOD_OPTIONS },
+  { type: 'subheading', text: "9. If you plan to start a business, what kind of business is it?" },
+  { type: 'text', key: 'plannedBusiness', label: 'Kind of business you plan to start' },
+  { type: 'subheading', text: '10. Is your business registered?' },
+  { type: 'single', key: 'registered', options: REGISTRATION_OPTIONS },
+  { type: 'subheading', text: "11. What are the main challenges you face, or expect to face, in business? (Tick all that apply)" },
+  { type: 'multi', key: 'challenges', options: CHALLENGES_OPTIONS, otherTrigger: 'Other', otherKey: 'challengesOther' },
+  { type: 'subheading', text: '12. Have you attended any business or entrepreneurship training before?' },
+  { type: 'single', key: 'priorTraining', options: ['Yes', 'No'] },
+  { type: 'text', key: 'priorTrainingDetails', label: "If yes, which training and who provided it?" }
+];
+
+const sectionCBlocks: Block[] = [
+  { type: 'heading', text: 'Section C: Training needs' },
+  { type: 'subheading', text: '13. How much do you need training in each of the following areas? Tick one box per row.' },
+  { type: 'matrix', key: 'trainingNeeds', title: 'Training area', items: TRAINING_AREAS, levels: TRAINING_NEED_LEVELS },
+  { type: 'subheading', text: "14. Which THREE areas from Question 13 would you most like to learn first?" },
+  { type: 'text', key: 'topArea1', label: '1.' },
+  { type: 'text', key: 'topArea2', label: '2.' },
+  { type: 'text', key: 'topArea3', label: '3.' },
+  { type: 'subheading', text: '15. Any other skills you would like to learn?' },
+  { type: 'text', key: 'otherSkills', label: 'Other skills' }
+];
+
+const sectionDBlocks: Block[] = [
+  { type: 'heading', text: 'Section D: Training preferences' },
+  { type: 'subheading', text: '16. Preferred course duration' },
+  { type: 'single', key: 'duration', options: DURATION_OPTIONS },
+  { type: 'subheading', text: '17. Preferred time' },
+  { type: 'single', key: 'time', options: TIME_OPTIONS },
+  { type: 'subheading', text: '18. Preferred mode of training' },
+  { type: 'single', key: 'mode', options: MODE_OPTIONS },
+  { type: 'subheading', text: '19. Preferred language of instruction' },
+  { type: 'single', key: 'language', options: LANGUAGE_OPTIONS },
+  { type: 'subheading', text: "20. Which learning methods do you prefer? (Tick all that apply)" },
+  { type: 'multi', key: 'methods', options: METHODS_OPTIONS }
+];
+
+const sectionEBlocks: Block[] = [
+  { type: 'heading', text: 'Section E: Ability to pay and further support' },
+  { type: 'subheading', text: '21. How much can you afford to pay for a 3-day course (TZS)?' },
+  { type: 'single', key: 'afford', options: AFFORD_OPTIONS },
+  { type: 'subheading', text: '22. After training, what further support would help you most? (Tick all that apply)' },
+  { type: 'multi', key: 'support', options: SUPPORT_OPTIONS },
+  { type: 'subheading', text: "23. Would you like us to contact you when courses start?" },
+  { type: 'single', key: 'contact', options: CONTACT_OPTIONS },
+  { type: 'subheading', text: "24. Any other comments or suggestions" },
+  { type: 'text', key: 'comments', label: 'Comments or suggestions' }
+];
+
+export const ENTREPRENEURSHIP_DEF: QuestionnaireDef = {
+  key: 'entrepreneurship',
+  slug: 'entrepreneurship',
+  label: "Entrepreneurship Centre's Questionnaire",
+  shortLabel: 'Entrepreneurship',
+  docTitle: 'ENTREPRENEURSHIP CENTRE — TRAINING NEEDS ASSESSMENT QUESTIONNAIRE, ARUSHA TECHNICAL COLLEGE',
+  blocks: [
+    ...entrepreneurshipIntroBlocks,
+    ...sectionABlocks,
+    ...sectionBBlocks,
+    ...sectionCBlocks,
+    ...sectionDBlocks,
+    ...sectionEBlocks,
+    respondentBlock
+  ]
+};
+
 export const REGISTRY: Record<string, QuestionnaireDef> = {
   graduate: GRADUATE_DEF,
   society: SOCIETY_DEF,
   employer: EMPLOYER_DEF,
-  professional: PROFESSIONAL_DEF
+  professional: PROFESSIONAL_DEF,
+  entrepreneurship: ENTREPRENEURSHIP_DEF
 };
 
 export const ALL_TYPES = Object.values(REGISTRY);

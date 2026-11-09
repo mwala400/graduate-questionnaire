@@ -11,14 +11,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// One row per submitted questionnaire, of any of the four types. Each
+// One row per submitted questionnaire, of any of the five types. Each
 // type's fields differ enough (Employer's org profile, Professional's
-// alumni table, etc.) that a single wide table of nullable columns would
-// be unwieldy; instead `data` holds the type-specific payload as JSON,
-// validated against lib/questionnaires/definitions.ts at read/write time.
+// alumni table, Entrepreneurship's training-needs matrix, etc.) that a
+// single wide table of nullable columns would be unwieldy; instead `data`
+// holds the type-specific payload as JSON, validated against
+// lib/questionnaires/definitions.ts at read/write time.
 model Response {
   id        String   @id @default(cuid())
-  type      String // "graduate" | "society" | "employer" | "professional"
+  type      String // "graduate" | "society" | "employer" | "professional" | "entrepreneurship"
   createdAt DateTime @default(now())
   data      String // JSON-encoded payload matching that type's QuestionnaireDef
 
@@ -30,7 +31,7 @@ model Response {
 // on both local SQLite and hosted Postgres.
 model Draft {
   id        String   @id @default(cuid())
-  type      String // "graduate" | "society" | "employer" | "professional"
+  type      String // "graduate" | "society" | "employer" | "professional" | "entrepreneurship"
   data      String // JSON-encoded payload (may be partial)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

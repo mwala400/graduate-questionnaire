@@ -1,7 +1,6 @@
 # ATC IT Curriculum Review Questionnaires — Web Portal
 
-A Next.js application that puts all four of Arusha Technical College's curriculum-review
-questionnaires online, as **one system with four separate shareable links**:
+A Next.js application that puts all five of Arusha Technical College's questionnaires online, as **one system with five separate shareable links**:
 
 | Type | Shareable link | Based on |
 |---|---|---|
@@ -9,16 +8,17 @@ questionnaires online, as **one system with four separate shareable links**:
 | Society | `/fill/society` | `IT_Society_Questionnaire.docx` |
 | Employers | `/fill/employer` | `IT_Employer_Questionnaire.docx` |
 | Professionals | `/fill/professional` | `IT_Professional_Questionnaire.docx` |
+| Entrepreneurship Centre | `/fill/entrepreneurship` | Training Needs Assessment Questionnaire |
 
 Share whichever link fits each audience — graduates get the graduate link, employers get the
 employer link, and so on. Everyone fills only their own form.
 
 - **Public respondents** fill their questionnaire and, right after submitting, can download a
   copy of their own answers (.docx or .pdf) to keep for their records.
-- **Everyone** can view a **Global Analysis** dashboard, with a tab to switch between the four
+- **Everyone** can view a **Global Analysis** dashboard, with a tab to switch between the five
   questionnaire types.
 - **Admins** unlock one dashboard (also with a type switcher) with a secret access code, and can
-  download, per type or all four at once:
+  download, per type or all five at once:
   - Any single response as a **Word document (.docx)** that recreates the original questionnaire
     layout for that type — including both official logos.
   - The same response as a matching **PDF**.
@@ -206,10 +206,10 @@ Four generic engines each walk that same block list and know how to render every
 - `lib/excelBuilder.ts` — the Excel export
 - `lib/analyticsBuilder.ts` — the Global Analysis charts
 
-Adding a fifth questionnaire type later means adding one new block list to
+Adding a questionnaire type later means adding one new block list to
 `lib/questionnaires/definitions.ts` — no new form, no new document code.
 
-All four types share one Prisma table (`prisma/schema.prisma`): each row has a `type` column
+All five types share one Prisma table (`prisma/schema.prisma`): each row has a `type` column
 and a `data` column holding that type's answers as JSON, validated against its block list on
 the way in and out (`lib/questionnaires/payload.ts`).
 
@@ -219,8 +219,8 @@ the way in and out (`lib/questionnaires/payload.ts`).
 
 ```
 app/
-  page.tsx                         Landing page (links to all 4 questionnaires + analysis)
-  fill/[type]/page.tsx              Shareable fill page for one type (graduate/society/employer/professional)
+  page.tsx                         Landing page (links to all 5 questionnaires + analysis)
+  fill/[type]/page.tsx              Shareable fill page for one type (graduate/society/employer/professional/entrepreneurship)
   analysis/page.tsx                 Public analysis dashboard with a type switcher
   [...slug]/page.tsx                Hidden admin router (login / dashboard / 404 for everything else)
   [...slug]/AdminLogin.tsx          Admin login form
@@ -237,7 +237,7 @@ components/
 lib/
   questionnaires/
     blocks.ts                       The block vocabulary (types)
-    definitions.ts                  The four questionnaire definitions (block lists)
+    definitions.ts                  The questionnaire definitions (block lists)
     shared-options.ts                Option lists reused across types
     payload.ts                      Empty-payload + validation + JSON row <-> payload helpers
   docBuilder.ts                     Generic .docx generator
@@ -249,7 +249,7 @@ lib/
   requireAdmin.ts                   Route guard used by every admin API route
   adminCredentials.ts                Auto-generates/prints admin credentials at startup
 instrumentation.ts                   Runs adminCredentials at server startup (dev, start, and each Vercel cold start)
-prisma/schema.prisma                 One `Response` table (type + JSON data) for all 4 types
+prisma/schema.prisma                 One `Response` table (type + JSON data) for all 5 types
 public/logos/                        The two official logos, reused across all generated documents
 scripts/
   generate-admin-credentials.js      Standalone generator for pre-deploy (Vercel) use

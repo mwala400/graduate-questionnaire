@@ -85,11 +85,11 @@ function checklistParagraph(options: string[], selected: string[], otherTrigger?
   return new Paragraph({ spacing: { after: 200 }, children: runs });
 }
 
-function ratingMatrixTable(title: string, items: string[], answers: Record<string, string>, snWidth = 500, labelWidth = 5500) {
-  const ratingWidth = (9000 - snWidth - labelWidth) / 3;
+function ratingMatrixTable(title: string, items: string[], answers: Record<string, string>, levels: readonly string[] = RATING_LEVELS, snWidth = 500, labelWidth = 5500) {
+  const ratingWidth = (9000 - snWidth - labelWidth) / levels.length;
   const headerRow = new TableRow({
     tableHeader: true,
-    children: [headerCell('S/N', snWidth), headerCell(title, labelWidth), ...RATING_LEVELS.map((lvl) => headerCell(lvl, ratingWidth))]
+    children: [headerCell('S/N', snWidth), headerCell(title, labelWidth), ...levels.map((lvl) => headerCell(lvl, ratingWidth))]
   });
   const rows = items.map(
     (item, idx) =>
@@ -97,7 +97,7 @@ function ratingMatrixTable(title: string, items: string[], answers: Record<strin
         children: [
           textCell(String(idx + 1), snWidth),
           textCell(item, labelWidth),
-          ...RATING_LEVELS.map((lvl) => tickCell(ratingWidth, answers?.[item] === lvl))
+          ...levels.map((lvl) => tickCell(ratingWidth, answers?.[item] === lvl))
         ]
       })
   );
@@ -211,7 +211,8 @@ function renderBlock(block: Block, payload: Payload): (Paragraph | Table)[] {
     case 'multi':
       return [checklistParagraph(block.options, payload[block.key] || [], block.otherTrigger, block.otherKey ? payload[block.otherKey] : undefined)];
     case 'matrix': {
-      const els: (Paragraph | Table)[] = [ratingMatrixTable(block.title, block.items, payload[block.key] || {})];
+      const levels = block.levels ?? RATING_LEVELS;
+      const els: (Paragraph | Table)[] = [ratingMatrixTable(block.title, block.items, payload[block.key] || {}, levels)];
       if (block.otherKey) {
         els.push(new Paragraph({ spacing: { before: 150, after: 200 }, children: [new TextRun({ text: `${block.otherLabel || 'Other'}: ${payload[block.otherKey] || '—'}` })] }));
       }

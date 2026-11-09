@@ -37,6 +37,7 @@ export type Block =
       key: string; // payload key holding a MatrixAnswer
       title: string; // column header for the item name column
       items: string[];
+      levels?: readonly string[]; // optional custom column levels; defaults to RATING_LEVELS
       otherKey?: string; // payload key for the free-text "other" line
       otherLabel?: string;
     }
@@ -57,7 +58,7 @@ export type Block =
   | { type: 'respondent' };
 
 export interface QuestionnaireDef {
-  key: 'graduate' | 'society' | 'employer' | 'professional';
+  key: 'graduate' | 'society' | 'employer' | 'professional' | 'entrepreneurship';
   slug: string;
   label: string; // human name, e.g. "Graduates' Questionnaire"
   shortLabel: string; // for nav/menus

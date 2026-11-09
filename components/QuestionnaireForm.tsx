@@ -282,6 +282,7 @@ function BlockRenderer({ block, payload, set }: { block: any; payload: Payload; 
       );
     case 'matrix': {
       const answers = payload[block.key] || {};
+      const levels = block.levels ?? RATING_LEVELS;
       return (
         <>
           <div style={{ overflowX: 'auto' }}>
@@ -290,7 +291,7 @@ function BlockRenderer({ block, payload, set }: { block: any; payload: Payload; 
                 <tr>
                   <th style={{ width: 30 }}>S/N</th>
                   <th style={{ textAlign: 'left' }}>{block.title}</th>
-                  {RATING_LEVELS.map((lvl) => (
+                  {levels.map((lvl) => (
                     <th key={lvl}>{lvl}</th>
                   ))}
                 </tr>
@@ -300,7 +301,7 @@ function BlockRenderer({ block, payload, set }: { block: any; payload: Payload; 
                   <tr key={item}>
                     <td>{idx + 1}</td>
                     <td className="label">{item}</td>
-                    {RATING_LEVELS.map((lvl) => (
+                    {levels.map((lvl) => (
                       <td key={lvl}>
                         <input
                           type="radio"

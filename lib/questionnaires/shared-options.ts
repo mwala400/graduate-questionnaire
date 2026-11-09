@@ -4,7 +4,7 @@
 
 export const RATING_LEVELS = ['Highly Recommended', 'Recommended', 'Not Recommended'] as const;
 export type RatingLevel = (typeof RATING_LEVELS)[number];
-export type MatrixAnswer = Record<string, RatingLevel>;
+export type MatrixAnswer = Record<string, string>;
 
 export const STATUS_OPTIONS = [
   'Central/Local Government',
@@ -176,3 +176,95 @@ export const ALUMNI_LINKAGE_ITEMS = [
   'Industrial Visit',
   'Industrial Practical learning'
 ];
+
+// ---------------------------------------------------------------------
+// ENTREPRENEURSHIP CENTRE — Training Needs Assessment option lists
+// ---------------------------------------------------------------------
+
+export const TRAINING_NEED_LEVELS = ['High need', 'Medium need', 'Low need', 'Not needed'] as const;
+export type TrainingNeedLevel = (typeof TRAINING_NEED_LEVELS)[number];
+
+export const RESPONDENT_GROUPS = [
+  'Form four / form six leaver',
+  'College or university graduate',
+  'Youth seeking employment or self-employment',
+  "Woman entrepreneur / member of a women's group (e.g. VICOBA)",
+  'Tour operator, tour guide or tourism business owner',
+  'Small business owner (shop, salon, food vendor, tailoring, etc.)',
+  'Farmer or agro-processor',
+  'Artisan or craft maker',
+  'Employee planning to start a business',
+  'Other'
+];
+
+export const GENDER_OPTIONS = ['Female', 'Male'];
+
+export const AGE_OPTIONS = ['Below 18', '18–24', '25–35', '36–45', '46 and above'];
+
+export const EDUCATION_OPTIONS = ['Primary', 'Form four', 'Form six', 'Certificate / Diploma', 'Degree and above'];
+
+export const BUSINESS_SITUATION_OPTIONS = ['Yes', "No, but I plan to start one", "No, and I have no plans yet"];
+
+export const BUSINESS_PERIOD_OPTIONS = ['Less than 1 year', '1–3 years', 'More than 3 years'];
+
+export const REGISTRATION_OPTIONS = ['Yes (business licence / TIN)', 'No', 'Not applicable'];
+
+export const CHALLENGES_OPTIONS = [
+  'Lack of capital or access to loans',
+  'Lack of a good business idea',
+  'Lack of business knowledge and skills',
+  'Finding customers and markets',
+  'Keeping records and managing money',
+  'Competition',
+  'Business registration, licences and tax',
+  'Lack of equipment or working space',
+  'Other'
+];
+
+export const TRAINING_AREAS = [
+  'Generating and testing business ideas',
+  'Starting a business and writing a business plan',
+  'Record keeping and bookkeeping',
+  'Costing and pricing products or services',
+  'Marketing and finding customers',
+  'Digital marketing (WhatsApp Business, Instagram, Facebook)',
+  'Customer care',
+  'Accessing loans (banks, SACCOS, council youth and women loans)',
+  'Business registration, licences and tax (BRELA, TIN, EFD)',
+  'Savings, investment and group (VICOBA) management',
+  'Packaging, branding and product quality (TBS)',
+  'Value addition and food processing',
+  'Tourism business: tour packaging, online bookings and guest service',
+  'Selling crafts and products to tourists and export markets',
+  'Leadership and teamwork',
+  'Green business: reducing waste, reusing and recycling'
+];
+
+export const DURATION_OPTIONS = ['1 day', '2–3 days', '1 week', '2–4 weeks'];
+
+export const TIME_OPTIONS = ['Weekdays (morning)', 'Weekdays (afternoon)', 'Evenings', 'Weekends'];
+
+export const MODE_OPTIONS = ['Face-to-face', 'Online / phone', 'Both'];
+
+export const LANGUAGE_OPTIONS = ['Kiswahili', 'English', 'Both'];
+
+export const METHODS_OPTIONS = [
+  'Practical / hands-on',
+  'Group discussions',
+  'Business visits',
+  'Mentoring after training',
+  'Lectures',
+  'Certificate of completion'
+];
+
+export const AFFORD_OPTIONS = ['200,000–300,000', '300,001–400,000', '400,001–500,000', 'Above 500,000'];
+
+export const SUPPORT_OPTIONS = [
+  'Mentoring and follow-up visits',
+  'Linking to loans and finance',
+  'Business incubation (space and support to start)',
+  'Linking to markets and trade fairs',
+  'Help with business registration'
+];
+
+export const CONTACT_OPTIONS = ['Yes', 'No'];

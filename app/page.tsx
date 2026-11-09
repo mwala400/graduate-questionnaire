@@ -8,7 +8,7 @@ export default function HomePage() {
         <h2 className="section-title">Welcome</h2>
         <p>
           This portal collects feedback for the curriculum review of the Ordinary Diploma in
-          Information Technology (NTA Level 4–6) at Arusha Technical College, from four groups of
+          Information Technology (NTA Level 4–6) at Arusha Technical College, from five groups of
           respondents. Each group has its own questionnaire and its own shareable link below.
         </p>
       </div>
