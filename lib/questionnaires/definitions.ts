@@ -215,7 +215,7 @@ export const PROFESSIONAL_DEF: QuestionnaireDef = {
 // ---------------------------------------------------------------------
 
 const ENTREPRENEURSHIP_INTRO_PARAGRAPH =
-  'The Entrepreneurship Centre at Arusha Technical College plans to offer practical short courses to help people start, run and grow their own businesses. This questionnaire will help us understand what you want to learn, so that we can design courses that meet your needs. It takes about 10 minutes to complete. Your answers will be kept confidential and used only to plan training. Please tick (✓) the boxes that apply or write your answers in the spaces provided.';
+  'The Entrepreneurship Centre at Arusha Technical College plans to offer practical short courses to help people start, run and grow their own businesses. This questionnaire will help us understand what you want to learn, so that we can design courses that meet your needs. It takes about 10 minutes to complete. Your answers will be kept confidential and used only to plan training. Please tick (x) the boxes that apply or write your answers in the spaces provided.';
 
 const entrepreneurshipIntroBlocks: Block[] = [
   { type: 'paragraph', text: 'Dear Respondent,' },
