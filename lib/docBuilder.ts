@@ -138,7 +138,14 @@ function weightingTable(chosenColumn: string | undefined, otherValues: Record<st
   return new Table({ width: { size: 9000, type: WidthType.DXA }, rows: [headerRow, ...rows] });
 }
 
-function headerBlock(docTitle: string) {
+function headerBlock(def: QuestionnaireDef) {
+  if (def.key === 'entrepreneurship') {
+    return [
+      new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 60 }, children: [new TextRun({ text: 'ENTREPRENEURSHIP CENTRE', bold: true })] }),
+      new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 100 }, children: [new TextRun({ text: def.docTitle, bold: true })] })
+    ];
+  }
+
   const headerTable = new Table({
     width: { size: 9000, type: WidthType.DXA },
     borders: {
@@ -188,7 +195,7 @@ function headerBlock(docTitle: string) {
   return [
     headerTable,
     new Paragraph({ text: '' }),
-    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 100 }, children: [new TextRun({ text: docTitle, bold: true })] })
+    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 100 }, children: [new TextRun({ text: def.docTitle, bold: true })] })
   ];
 }
 
@@ -256,18 +263,36 @@ function renderBlock(block: Block, payload: Payload): (Paragraph | Table)[] {
 }
 
 export async function buildQuestionnaireDocx(def: QuestionnaireDef, payload: Payload, meta: { id: string; createdAt: Date }): Promise<Buffer> {
-  const children: (Paragraph | Table)[] = [...headerBlock(def.docTitle)];
+  const children: (Paragraph | Table)[] = [...headerBlock(def)];
   for (const block of def.blocks) children.push(...renderBlock(block, payload));
 
   children.push(new Paragraph({ text: '' }));
-  children.push(new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'Thank you for your valuable input.', bold: true, italics: true })] }));
-  children.push(
-    new Paragraph({
-      alignment: AlignmentType.CENTER,
-      spacing: { before: 300 },
-      children: [new TextRun({ text: `Response ID: ${meta.id}  |  Submitted: ${meta.createdAt.toISOString()}`, italics: true, size: 16, color: '888888' })]
-    })
-  );
+  if (def.key === 'entrepreneurship') {
+    children.push(new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'Thank you for completing this questionnaire.', bold: true, italics: true })] }));
+    children.push(
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { before: 200, after: 100 },
+        children: [
+          new TextRun({
+            text: 'Entrepreneurship Centre, Arusha Technical College, P.O. Box 296, Arusha  |  Email: winfrida22tz@gmail.com  |  Phone: 0786807151/0656458168',
+            italics: true,
+            size: 14,
+            color: '888888'
+          })
+        ]
+      })
+    );
+  } else {
+    children.push(new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'Thank you for your valuable input.', bold: true, italics: true })] }));
+    children.push(
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { before: 300 },
+        children: [new TextRun({ text: `Response ID: ${meta.id}  |  Submitted: ${meta.createdAt.toISOString()}`, italics: true, size: 16, color: '888888' })]
+      })
+    );
+  }
 
   const doc = new Document({
     sections: [

@@ -215,10 +215,9 @@ export const PROFESSIONAL_DEF: QuestionnaireDef = {
 // ---------------------------------------------------------------------
 
 const ENTREPRENEURSHIP_INTRO_PARAGRAPH =
-  'The Entrepreneurship Centre at Arusha Technical College plans to offer practical short courses to help people start, run and grow their own businesses. This questionnaire will help us understand what you want to learn, so that we can design courses that meet your needs. It takes about 10 minutes to complete. Your answers will be kept confidential and used only to plan training.';
+  'The Entrepreneurship Centre at Arusha Technical College plans to offer practical short courses to help people start, run and grow their own businesses. This questionnaire will help us understand what you want to learn, so that we can design courses that meet your needs. It takes about 10 minutes to complete. Your answers will be kept confidential and used only to plan training. Please tick (✓) the boxes that apply or write your answers in the spaces provided.';
 
 const entrepreneurshipIntroBlocks: Block[] = [
-  { type: 'subheading', text: 'Introduction' },
   { type: 'paragraph', text: 'Dear Respondent,' },
   { type: 'paragraph', text: ENTREPRENEURSHIP_INTRO_PARAGRAPH },
   { type: 'paragraph', text: 'Thank you for your time.' }
@@ -306,7 +305,7 @@ export const ENTREPRENEURSHIP_DEF: QuestionnaireDef = {
   slug: 'entrepreneurship',
   label: "Entrepreneurship Centre's Questionnaire",
   shortLabel: 'Entrepreneurship',
-  docTitle: 'ENTREPRENEURSHIP CENTRE — TRAINING NEEDS ASSESSMENT QUESTIONNAIRE, ARUSHA TECHNICAL COLLEGE',
+  docTitle: 'Training Needs Assessment Questionnaire',
   blocks: [
     ...entrepreneurshipIntroBlocks,
     ...sectionABlocks,

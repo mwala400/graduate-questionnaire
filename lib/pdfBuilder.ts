@@ -182,7 +182,13 @@ class PdfCanvas {
   }
 }
 
-async function drawHeader(c: PdfCanvas, docTitle: string) {
+async function drawHeader(c: PdfCanvas, def: QuestionnaireDef) {
+  if (def.key === 'entrepreneurship') {
+    c.drawParagraph('ENTREPRENEURSHIP CENTRE', { bold: true, align: 'center', size: 12, gapAfter: 4 });
+    c.drawParagraph(def.docTitle, { bold: true, align: 'center', size: 11.5, gapAfter: 10 });
+    return;
+  }
+
   const emblemBytes = loadLogo('tanzania-emblem.png');
   const atcBytes = loadLogo('atc-logo.png');
   const emblem = await c.doc.embedPng(emblemBytes);
@@ -206,7 +212,7 @@ async function drawHeader(c: PdfCanvas, docTitle: string) {
   }
   c.y = topY - logoH - 12;
 
-  c.drawParagraph(docTitle, { bold: true, align: 'center', size: 11.5, gapAfter: 4 });
+  c.drawParagraph(def.docTitle, { bold: true, align: 'center', size: 11.5, gapAfter: 4 });
 }
 
 function drawRatingMatrix(c: PdfCanvas, title: string, items: string[], answers: Record<string, string>, levels: readonly string[] = RATING_LEVELS) {
@@ -334,12 +340,21 @@ async function renderBlock(c: PdfCanvas, block: Block, payload: Payload) {
 
 export async function buildQuestionnairePdf(def: QuestionnaireDef, payload: Payload, meta: { id: string; createdAt: Date }): Promise<Buffer> {
   const c = await PdfCanvas.create();
-  await drawHeader(c, def.docTitle);
+  await drawHeader(c, def);
   for (const block of def.blocks) await renderBlock(c, block, payload);
 
   c.drawGap(8);
-  c.drawParagraph('Thank you for your valuable input.', { bold: true, align: 'center', size: 10, gapAfter: 6 });
-  c.drawParagraph(`Response ID: ${meta.id}  |  Submitted: ${meta.createdAt.toISOString()}`, { align: 'center', size: 7.5, gray: true });
+  if (def.key === 'entrepreneurship') {
+    c.drawParagraph('Thank you for completing this questionnaire.', { bold: true, align: 'center', size: 10, gapAfter: 6 });
+    c.drawGap(4);
+    c.drawParagraph(
+      'Entrepreneurship Centre, Arusha Technical College, P.O. Box 296, Arusha  |  Email: winfrida22tz@gmail.com  |  Phone: 0786807151/0656458168',
+      { align: 'center', size: 9, gray: true }
+    );
+  } else {
+    c.drawParagraph('Thank you for your valuable input.', { bold: true, align: 'center', size: 10, gapAfter: 6 });
+    c.drawParagraph(`Response ID: ${meta.id}  |  Submitted: ${meta.createdAt.toISOString()}`, { align: 'center', size: 7.5, gray: true });
+  }
 
   const bytes = await c.doc.save();
   return Buffer.from(bytes);
